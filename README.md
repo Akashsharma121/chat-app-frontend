@@ -1,70 +1,74 @@
-# Getting Started with Create React App
+# Real-Time Chat App — Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+React frontend jo backend REST API aur Socket.io se connect hota hai.
 
-## Available Scripts
+## Tech Stack
+- React (Create React App)
+- React Router (routing)
+- Axios (API calls)
+- Socket.io-client (real-time events)
+- Plain CSS (no framework — custom design system)
 
-In the project directory, you can run:
+## Folder Structure
+```
+chat-app-frontend/
+├── src/
+│   ├── context/
+│   │   ├── AuthContext.js     # Login/signup/logout state
+│   │   └── SocketContext.js   # Socket.io connection + online users
+│   ├── components/
+│   │   ├── ProtectedRoute.js  # Redirects to /login if not authed
+│   │   ├── Sidebar.js         # User list with search + online status
+│   │   ├── ChatWindow.js      # Message thread + input + typing
+│   │   └── MessageBubble.js   # Single message bubble
+│   ├── pages/
+│   │   ├── Login.js
+│   │   ├── Signup.js
+│   │   └── Chat.js            # Combines Sidebar + ChatWindow
+│   ├── utils/
+│   │   └── api.js             # Axios instance with auth header
+│   ├── App.js                 # Routes
+│   ├── App.css                # All app styling
+│   └── index.js / index.css
+└── .env                       # Create this (see below)
+```
 
-### `npm start`
+## Setup Instructions
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 1. Install dependencies
+```bash
+npm install
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### 2. Create `.env` file
+```bash
+cp .env.example .env
+```
+Default values point to `http://localhost:5000` — change only if your backend runs elsewhere:
+```
+REACT_APP_API_URL=http://localhost:5000/api
+REACT_APP_SOCKET_URL=http://localhost:5000
+```
 
-### `npm test`
+### 3. Make sure the backend is running first
+The frontend expects the backend (from the other folder) running on port 5000.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 4. Run the app
+```bash
+npm start
+```
+Opens at `http://localhost:3000`
 
-### `npm run build`
+## How to test real-time chat (2 users)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. Open the app in two different browser windows (or one normal + one incognito)
+2. Sign up as **User A** in window 1
+3. Sign up as **User B** in window 2
+4. In window 1, click on User B from the sidebar and send a message
+5. It should appear instantly in window 2 — that's Socket.io working
+6. Try typing without sending — the other window shows a typing indicator
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Notes
+- Auth token is stored in `localStorage` under `chatapp_token`
+- Refreshing the page keeps you logged in (session persists)
+- Logout clears local storage and disconnects the socket
